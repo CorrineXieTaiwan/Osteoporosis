@@ -617,6 +617,61 @@
         // High-risk habits (val > 0.5)
         const highRiskHabits = questions.filter(q => answers[q.id] && answers[q.id].val >= 0.66);
  
+        // Generate ID and timestamp
+        const now = new Date();
+        const pad = n => String(n).padStart(2,'0');
+        const timestamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        const id = `OST-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${Math.floor(Math.random()*9000)+1000}`;
+ 
+        const optLabels = ['從不','偶爾','經常','總是'];
+        function valToLabel(val) {
+          if (val === 0) return '從不';
+          if (val === 0.33) return '偶爾';
+          if (val === 0.66) return '經常';
+          return '總是';
+        }
+        function scoreOf(qid) {
+          return answers[qid] ? (answers[qid].val * questions.find(q=>q.id===qid).fscore / totalFScore * 100).toFixed(2) : '0';
+        }
+ 
+        const payload = {
+          timestamp, id,
+          gender: gender === 'male' ? '男' : '女',
+          age,
+          menopause: gender === 'female' ? (menopause === 'yes' ? '已停經' : '未停經') : '不適用',
+          q_meat:     valToLabel(answers['q_meat']?.val),
+          q_hotpot:   valToLabel(answers['q_hotpot']?.val),
+          q_drink:    valToLabel(answers['q_drink']?.val),
+          q_alcohol:  valToLabel(answers['q_alcohol']?.val),
+          q_stirfry:  valToLabel(answers['q_stirfry']?.val),
+          q_incense:  valToLabel(answers['q_incense']?.val),
+          q_oilfried: valToLabel(answers['q_oilfried']?.val),
+          q_airpol:   valToLabel(answers['q_airpol']?.val),
+          q_motor:    valToLabel(answers['q_motor']?.val),
+          q_aroma:    valToLabel(answers['q_aroma']?.val),
+          score_meat:     scoreOf('q_meat'),
+          score_hotpot:   scoreOf('q_hotpot'),
+          score_drink:    scoreOf('q_drink'),
+          score_alcohol:  scoreOf('q_alcohol'),
+          score_stirfry:  scoreOf('q_stirfry'),
+          score_incense:  scoreOf('q_incense'),
+          score_oilfried: scoreOf('q_oilfried'),
+          score_airpol:   scoreOf('q_airpol'),
+          score_motor:    scoreOf('q_motor'),
+          score_aroma:    scoreOf('q_aroma'),
+          lifestyleScore: lifestyleScore.toFixed(2),
+          menopauseBonus,
+          ageBonus,
+          totalScore: totalScore.toFixed(2),
+          riskLevel: risk
+        };
+ 
+        // Send to Google Sheets via GET
+        const params = new URLSearchParams(payload);
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx-j2bACDqhPXRW6ibk_LKTQuHHnoaiNUq8UEf1GdBECkXahpyXRdfncqwHIXfjeKInIg/exec';
+        fetch(`${scriptURL}?${params.toString()}`, { method: 'GET', mode: 'no-cors' })
+          .catch(err => console.log('試算表寫入失敗：', err));
+ 
         showResult(totalScore, lifestyleScore, menopauseBonus, ageBonus, risk, riskClass, riskIcon, riskDesc, bmdAdvice, scoreDetails, highRiskHabits);
       }
  
@@ -805,3 +860,4 @@
 </script>
 </body>
 </html>
+ 
