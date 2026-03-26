@@ -6,7 +6,7 @@
 <title>骨質疏鬆飲食推薦系統</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap');
- 
+
   :root {
     --cream: #FAF7F2;
     --warm-white: #FFFEF9;
@@ -24,16 +24,16 @@
     --text-mid: #5C4433;
     --text-light: #8B7355;
   }
- 
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
- 
+
   body {
     background: var(--cream);
     font-family: 'Noto Sans TC', sans-serif;
     color: var(--text-dark);
     min-height: 100vh;
   }
- 
+
   .header {
     background: var(--brown-dark);
     padding: 32px 24px;
@@ -75,13 +75,13 @@
     position: relative;
     z-index: 1;
   }
- 
+
   .container {
     max-width: 680px;
     margin: 0 auto;
     padding: 24px 16px 60px;
   }
- 
+
   /* Progress */
   .progress-bar {
     background: var(--bone);
@@ -102,7 +102,7 @@
     color: var(--text-light);
     margin-bottom: 4px;
   }
- 
+
   /* Section */
   .section-title {
     font-family: 'Noto Serif TC', serif;
@@ -114,7 +114,7 @@
     border-left: 3px solid var(--brown-light);
     letter-spacing: 1px;
   }
- 
+
   /* Card */
   .card {
     background: var(--warm-white);
@@ -126,7 +126,7 @@
     transition: box-shadow 0.2s;
   }
   .card:hover { box-shadow: 0 4px 20px rgba(92,68,51,0.1); }
- 
+
   .card-header {
     display: flex;
     align-items: flex-start;
@@ -164,7 +164,7 @@
     padding: 2px 8px;
     border-radius: 99px;
   }
- 
+
   /* Options */
   .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .option {
@@ -194,7 +194,7 @@
     margin-top: 2px;
     display: block;
   }
- 
+
   /* Basic info */
   .basic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-group label {
@@ -219,7 +219,7 @@
   .form-group select:focus, .form-group input:focus {
     border-color: var(--brown-light);
   }
- 
+
   /* Submit button */
   .btn-submit {
     width: 100%;
@@ -243,12 +243,12 @@
     transform: translateY(-1px);
   }
   .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
- 
+
   /* Result page */
   .result-page { display: none; }
   .result-page.show { display: block; }
   .question-page.hide { display: none; }
- 
+
   .risk-banner {
     border-radius: 20px;
     padding: 28px 24px;
@@ -285,7 +285,7 @@
     margin-bottom: 10px;
   }
   .risk-desc { font-size: 14px; color: var(--text-dark); line-height: 1.7; }
- 
+
   /* Score breakdown */
   .score-bar-item { margin-bottom: 10px; }
   .score-bar-label {
@@ -309,7 +309,7 @@
   .bar-high { background: var(--red-soft); }
   .bar-mid { background: var(--orange-soft); }
   .bar-low { background: var(--green-soft); }
- 
+
   /* Recommendations */
   .rec-card {
     background: var(--warm-white);
@@ -342,7 +342,7 @@
   }
   .rec-card.plasticizer .rec-tag { background: var(--orange-light); color: var(--orange-soft); }
   .rec-card.nutrition .rec-tag { background: var(--green-light); color: var(--green-soft); }
- 
+
   .rec-item {
     display: flex;
     gap: 10px;
@@ -352,7 +352,7 @@
   .rec-arrow { color: var(--brown-light); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
   .rec-text { font-size: 13px; color: var(--text-dark); line-height: 1.6; }
   .rec-text strong { color: var(--green-soft); }
- 
+
   .nutrient-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -367,7 +367,7 @@
   }
   .nutrient-name { font-size: 13px; font-weight: 600; color: #3D7A42; margin-bottom: 2px; }
   .nutrient-food { font-size: 11px; color: var(--text-light); }
- 
+
   .btn-restart {
     width: 100%;
     padding: 14px;
@@ -384,7 +384,7 @@
     transition: all 0.2s;
   }
   .btn-restart:hover { background: var(--brown-dark); color: white; }
- 
+
   .disclaimer {
     background: var(--bone);
     border-radius: 12px;
@@ -395,7 +395,7 @@
     line-height: 1.7;
     text-align: center;
   }
- 
+
   .animate-in {
     animation: fadeUp 0.5s ease forwards;
     opacity: 0;
@@ -407,20 +407,20 @@
 </style>
 </head>
 <body>
- 
+
 <div class="header">
   <h1>🦴 骨質疏鬆飲食風險評估系統</h1>
   <p>基於 XGBoost 機器學習模型 · 個人化飲食推薦</p>
 </div>
- 
+
 <div class="container">
- 
+
   <!-- 問卷頁 -->
   <div class="question-page" id="questionPage">
- 
+
     <div class="progress-label" id="progressLabel">完成度 0%</div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
- 
+
     <!-- 基本資料 -->
     <div class="section-title">基本資料</div>
     <div class="card">
@@ -447,10 +447,10 @@
         </div>
       </div>
     </div>
- 
+
     <!-- 飲食習慣 -->
     <div class="section-title">飲食與生活習慣</div>
- 
+
     <script>
       // XGBoost F Score 權重（排除性別/停經，重新換算為100分）
       // 總F Score（不含性別）= 46+44+42+38+36+34+32+32+28+28 = 360
@@ -496,16 +496,16 @@
           suggest: '改用天然精油或無香產品，使用時保持空間通風',
           nutrient: '減少塑化劑暴露，保護骨骼代謝正常運作' },
       ];
- 
+
       const totalFScore = questions.reduce((s, q) => s + q.fscore, 0); // 360
- 
+
       const opts = [
         { label: '從不', sub: '無此習慣', val: 0 },
         { label: '偶爾', sub: '每週1-2次', val: 0.33 },
         { label: '經常', sub: '每週3-5次', val: 0.66 },
         { label: '總是', sub: '每天', val: 1.0 },
       ];
- 
+
       function buildQuestions() {
         const container = document.getElementById('questionsContainer');
         questions.forEach((q, i) => {
@@ -533,9 +533,9 @@
           container.innerHTML += html;
         });
       }
- 
+
       const answers = {};
- 
+
       function selectOpt(qid, optIdx, val, fscore) {
         // Deselect
         for (let j = 0; j < 4; j++) {
@@ -546,37 +546,37 @@
         answers[qid] = { val, fscore };
         updateProgress();
       }
- 
+
       function updateProgress() {
         const gender = document.getElementById('gender').value;
         const age = document.getElementById('age').value;
         const mGroup = document.getElementById('menopauseGroup');
- 
+
         // Show menopause if female
         if (gender === 'female') {
           mGroup.style.display = 'block';
         } else {
           mGroup.style.display = 'none';
         }
- 
+
         const basicDone = gender && age;
         const totalQ = questions.length;
         const answered = Object.keys(answers).length;
         const pct = Math.round(((basicDone ? 1 : 0) + answered) / (1 + totalQ) * 100);
- 
+
         document.getElementById('progressFill').style.width = pct + '%';
         document.getElementById('progressLabel').textContent = `完成度 ${pct}%`;
- 
+
         const btn = document.getElementById('btnSubmit');
         const allAnswered = answered === totalQ && gender && age;
         btn.disabled = !allAnswered;
       }
- 
+
       function calculate() {
         const gender = document.getElementById('gender').value;
         const age = parseInt(document.getElementById('age').value) || 0;
         const menopause = document.getElementById('menopause').value;
- 
+
         // Base score from lifestyle (max 100)
         let lifestyleScore = 0;
         const scoreDetails = [];
@@ -587,7 +587,7 @@
             scoreDetails.push({ label: q.label, score: sc, maxScore: q.fscore / totalFScore * 100, val: answers[q.id].val });
           }
         });
- 
+
         // Menopause bonus (OR ~10x → +20 points on top)
         let menopauseBonus = 0;
         if (gender === 'female' && menopause === 'yes') menopauseBonus = 20;
@@ -595,9 +595,9 @@
         let ageBonus = 0;
         if (age >= 65) ageBonus = 10;
         else if (age >= 50) ageBonus = 5;
- 
+
         const totalScore = Math.min(lifestyleScore + menopauseBonus + ageBonus, 100);
- 
+
         // Risk level
         let risk, riskClass, riskIcon, riskDesc, bmdAdvice;
         if (totalScore < 34) {
@@ -613,16 +613,16 @@
           riskDesc = '您的生活習慣評估顯示骨質疏鬆風險較高，建議積極調整飲食與生活習慣，並諮詢醫師進行進一步評估，以預防為核心策略降低骨折風險。';
           bmdAdvice = '建議盡快諮詢醫師進行骨密度檢查（DXA）。若已確診並接受藥物治療，依文獻指引藥物需一年以上才能見到減少骨折的效果，建議持續用藥至少一至兩年，並由醫師視臨床需求彈性評估治療成效。追蹤時，髖骨骨密度變化需達3-6%、腰椎需達2-4%以上，方可認定為具臨床意義之顯著改變。';
         }
- 
+
         // High-risk habits (val > 0.5)
         const highRiskHabits = questions.filter(q => answers[q.id] && answers[q.id].val >= 0.66);
- 
+
         // Generate ID and timestamp
         const now = new Date();
         const pad = n => String(n).padStart(2,'0');
         const timestamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
         const id = `OST-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${Math.floor(Math.random()*9000)+1000}`;
- 
+
         const optLabels = ['從不','偶爾','經常','總是'];
         function valToLabel(val) {
           if (val === 0) return '從不';
@@ -633,7 +633,7 @@
         function scoreOf(qid) {
           return answers[qid] ? (answers[qid].val * questions.find(q=>q.id===qid).fscore / totalFScore * 100).toFixed(2) : '0';
         }
- 
+
         const payload = {
           timestamp, id,
           gender: gender === 'male' ? '男' : '女',
@@ -665,28 +665,39 @@
           totalScore: totalScore.toFixed(2),
           riskLevel: risk
         };
- 
-        // Send to Google Sheets via GET
+
+        // Send to Google Sheets + get AI comment
         const params = new URLSearchParams(payload);
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx-j2bACDqhPXRW6ibk_LKTQuHHnoaiNUq8UEf1GdBECkXahpyXRdfncqwHIXfjeKInIg/exec';
-        fetch(`${scriptURL}?${params.toString()}`, { method: 'GET', mode: 'no-cors' })
-          .catch(err => console.log('試算表寫入失敗：', err));
- 
-        showResult(totalScore, lifestyleScore, menopauseBonus, ageBonus, risk, riskClass, riskIcon, riskDesc, bmdAdvice, scoreDetails, highRiskHabits);
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw3L7NhxpvX_IvqCe5V1AXw7iXEo11iYO0NBlIBKwnlVsH6pnb74ESVyZlgFijgXwUjfw/exec';
+
+        // Show loading state first
+        showResult(totalScore, lifestyleScore, menopauseBonus, ageBonus, risk, riskClass, riskIcon, riskDesc, bmdAdvice, scoreDetails, highRiskHabits, '⏳ AI 正在分析您的個人化評語，請稍候...');
+
+        fetch(`${scriptURL}?${params.toString()}`, { method: 'GET' })
+          .then(res => res.json())
+          .then(data => {
+            const el = document.getElementById('aiCommentText');
+            if (el && data.aiComment) el.textContent = data.aiComment;
+          })
+          .catch(err => {
+            const el = document.getElementById('aiCommentText');
+            if (el) el.textContent = '評語暫時無法產生，請稍後再試。';
+            console.log('AI評語失敗：', err);
+          });
       }
- 
-      function showResult(total, lifestyle, menopause, age, risk, riskClass, riskIcon, riskDesc, bmdAdvice, scoreDetails, highRisk) {
+
+      function showResult(total, lifestyle, menopause, age, risk, riskClass, riskIcon, riskDesc, bmdAdvice, scoreDetails, highRisk, aiComment = '') {
         document.getElementById('questionPage').classList.add('hide');
         const rp = document.getElementById('resultPage');
         rp.classList.add('show');
- 
+
         // Risk banner
         document.getElementById('riskBanner').className = `risk-banner ${riskClass} animate-in`;
         document.getElementById('riskIcon').textContent = riskIcon;
         document.getElementById('riskLevel').textContent = risk;
         document.getElementById('riskScoreText').textContent = `綜合風險分數：${total.toFixed(1)} / 100 分`;
         document.getElementById('riskDesc').textContent = riskDesc;
- 
+
         // Score breakdown
         const breakdown = document.getElementById('scoreBreakdown');
         breakdown.innerHTML = '';
@@ -720,13 +731,13 @@
               <div class="score-bar-track"><div class="score-bar-fill bar-mid" style="width:60%"></div></div>
             </div>`;
         }
- 
+
         // Recommendations
         const plasRec = document.getElementById('plasRecItems');
         const nutrRec = document.getElementById('nutrRecItems');
         plasRec.innerHTML = '';
         nutrRec.innerHTML = '';
- 
+
         const toShow = highRisk.length > 0 ? highRisk : questions.slice(0, 3);
         toShow.forEach(q => {
           plasRec.innerHTML += `
@@ -743,12 +754,13 @@
               <div class="rec-text">${q.nutrient}</div>
             </div>`;
         });
- 
+
         document.getElementById('bmdAdviceText').textContent = bmdAdvice;
- 
+        document.getElementById('aiCommentText').textContent = aiComment;
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
- 
+
       function restart() {
         Object.keys(answers).forEach(k => delete answers[k]);
         document.getElementById('gender').value = '';
@@ -768,35 +780,47 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     </script>
- 
+
     <div id="questionsContainer"></div>
- 
+
     <button class="btn-submit" id="btnSubmit" disabled onclick="calculate()">
       計算我的骨質疏鬆風險 →
     </button>
- 
+
     <div class="disclaimer">
       本系統依據 XGBoost 機器學習模型建構，僅供健康參考，不作為臨床診斷依據。如有疑慮請諮詢專業醫師。
     </div>
   </div>
- 
+
   <!-- 結果頁 -->
   <div class="result-page" id="resultPage">
- 
+
     <div id="riskBanner" class="risk-banner">
       <div class="risk-icon" id="riskIcon"></div>
       <div class="risk-level" id="riskLevel"></div>
       <div class="risk-score" id="riskScoreText"></div>
       <div class="risk-desc" id="riskDesc"></div>
     </div>
- 
+
     <div class="section-title">各習慣風險分析</div>
     <div class="card">
       <div id="scoreBreakdown"></div>
     </div>
- 
+
     <div class="section-title">個人化飲食建議</div>
- 
+
+    <div class="rec-card animate-in" style="border-left-color: #7B68EE; background: linear-gradient(135deg, #F8F7FF, #F0EEFF); animation-delay:0.05s">
+      <div class="rec-header">
+        <span class="rec-icon">🤖</span>
+        <span class="rec-title">AI 個人化健康評語</span>
+        <span class="rec-tag" style="background:#EDE9FF; color:#5B4FD4">Claude AI 分析</span>
+      </div>
+      <div class="rec-item">
+        <span class="rec-arrow" style="color:#7B68EE">▸</span>
+        <div class="rec-text" id="aiCommentText" style="line-height:1.8; color: var(--text-dark);"></div>
+      </div>
+    </div>
+
     <div class="rec-card plasticizer animate-in" style="animation-delay:0.1s">
       <div class="rec-header">
         <span class="rec-icon">🧴</span>
@@ -805,7 +829,7 @@
       </div>
       <div id="plasRecItems"></div>
     </div>
- 
+
     <div class="rec-card nutrition animate-in" style="animation-delay:0.2s">
       <div class="rec-header">
         <span class="rec-icon">🥗</span>
@@ -832,9 +856,9 @@
         </div>
       </div>
     </div>
- 
+
     <button class="btn-restart" onclick="restart()">← 重新評估</button>
- 
+
     <div class="rec-card animate-in" style="border-left-color: var(--brown-light); animation-delay:0.3s">
       <div class="rec-header">
         <span class="rec-icon">🏥</span>
@@ -846,18 +870,17 @@
         <div class="rec-text" id="bmdAdviceText"></div>
       </div>
     </div>
- 
+
     <div class="disclaimer">
       本系統以「預防勝於治療」為核心，依據 XGBoost 模型特徵重要性（F Score）加權計算風險分數，結合塑化劑暴露減量與骨骼營養補充兩大面向提供飲食建議。骨密度追蹤建議依據臨床文獻指引，未接受積極治療者建議兩年後追蹤；DXA 髖骨需達3-6%、腰椎需達2-4%以上方為顯著變化。本系統不作為臨床診斷依據，請諮詢專業醫師或營養師。
     </div>
   </div>
- 
+
 </div>
- 
+
 <script>
   buildQuestions();
   document.getElementById('gender').addEventListener('change', updateProgress);
 </script>
 </body>
 </html>
- 
