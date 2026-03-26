@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>骨質疏鬆飲食推薦系統</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap');
+ 
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFEF9;
+    --bone: #E8DFD0;
+    --brown-light: #C4A882;
+    --brown: #8B6F47;
+    --brown-dark: #5C4433;
+    --green-soft: #7A9E7E;
+    --green-light: #EBF3EC;
+    --orange-soft: #D4875A;
+    --orange-light: #FDF0E8;
+    --red-soft: #C4614A;
+    --red-light: #FDECEA;
+    --text-dark: #2C1E14;
+    --text-mid: #5C4433;
+    --text-light: #8B7355;
+  }
+ 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  body {
+    background: var(--cream);
+    font-family: 'Noto Sans TC', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+ 
+  .header {
+    background: var(--brown-dark);
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -20px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .header h1 {
+    font-family: 'Noto Serif TC', serif;
+    color: var(--warm-white);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+  }
+  .header p {
+    color: var(--bone);
+    font-size: 13px;
+    margin-top: 8px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+ 
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+ 
+  /* Progress */
+  .progress-bar {
+    background: var(--bone);
+    border-radius: 99px;
+    height: 6px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--brown), var(--brown-light));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 4px;
+  }
+ 
+  /* Section */
+  .section-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--brown-dark);
+    margin: 24px 0 16px;
+    padding-left: 12px;
+    border-left: 3px solid var(--brown-light);
+    letter-spacing: 1px;
+  }
+ 
+  /* Card */
+  .card {
+    background: var(--warm-white);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(196,168,130,0.2);
+    box-shadow: 0 2px 12px rgba(92,68,51,0.06);
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(92,68,51,0.1); }
+ 
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .card-num {
+    background: var(--brown-dark);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .card-info { flex: 1; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 3px;
+  }
+  .card-weight {
+    font-size: 11px;
+    color: var(--text-light);
+  }
+  .weight-badge {
+    display: inline-block;
+    background: var(--bone);
+    color: var(--brown-dark);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+ 
+  /* Options */
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .option {
+    border: 1.5px solid var(--bone);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+    text-align: center;
+  }
+  .option:hover { border-color: var(--brown-light); background: var(--warm-white); }
+  .option.selected {
+    border-color: var(--brown);
+    background: linear-gradient(135deg, #FDF8F2, #FAF0E4);
+    box-shadow: 0 0 0 2px rgba(139,111,71,0.15);
+  }
+  .option-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dark);
+    display: block;
+  }
+  .option-sub {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 2px;
+    display: block;
+  }
+ 
+  /* Basic info */
+  .basic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group label {
+    font-size: 13px;
+    color: var(--text-mid);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .form-group select, .form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--bone);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group select:focus, .form-group input:focus {
+    border-color: var(--brown-light);
+  }
+ 
+  /* Submit button */
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--brown-dark);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(92,68,51,0.3);
+  }
+  .btn-submit:hover {
+    background: var(--brown);
+    box-shadow: 0 6px 24px rgba(92,68,51,0.4);
+    transform: translateY(-1px);
+  }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+ 
+  /* Result page */
+  .result-page { display: none; }
+  .result-page.show { display: block; }
+  .question-page.hide { display: none; }
+ 
+  .risk-banner {
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .risk-banner.low {
+    background: linear-gradient(135deg, #EBF3EC, #D4E8D6);
+    border: 1px solid #7A9E7E;
+  }
+  .risk-banner.mid {
+    background: linear-gradient(135deg, #FDF0E8, #FAE0CC);
+    border: 1px solid #D4875A;
+  }
+  .risk-banner.high {
+    background: linear-gradient(135deg, #FDECEA, #FAD8D4);
+    border: 1px solid #C4614A;
+  }
+  .risk-icon { font-size: 42px; margin-bottom: 8px; }
+  .risk-level {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .risk-banner.low .risk-level { color: #3D7A42; }
+  .risk-banner.mid .risk-level { color: #A05A28; }
+  .risk-banner.high .risk-level { color: #8C3020; }
+  .risk-score {
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-bottom: 10px;
+  }
+  .risk-desc { font-size: 14px; color: var(--text-dark); line-height: 1.7; }
+ 
+  /* Score breakdown */
+  .score-bar-item { margin-bottom: 10px; }
+  .score-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-bottom: 4px;
+  }
+  .score-bar-track {
+    background: var(--bone);
+    border-radius: 99px;
+    height: 8px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.8s ease;
+  }
+  .bar-high { background: var(--red-soft); }
+  .bar-mid { background: var(--orange-soft); }
+  .bar-low { background: var(--green-soft); }
+ 
+  /* Recommendations */
+  .rec-card {
+    background: var(--warm-white);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--brown-light);
+    box-shadow: 0 2px 10px rgba(92,68,51,0.06);
+  }
+  .rec-card.plasticizer { border-left-color: var(--orange-soft); }
+  .rec-card.nutrition { border-left-color: var(--green-soft); }
+  .rec-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .rec-icon { font-size: 20px; }
+  .rec-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+  .rec-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 600;
+  }
+  .rec-card.plasticizer .rec-tag { background: var(--orange-light); color: var(--orange-soft); }
+  .rec-card.nutrition .rec-tag { background: var(--green-light); color: var(--green-soft); }
+ 
+  .rec-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+  .rec-arrow { color: var(--brown-light); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .rec-text { font-size: 13px; color: var(--text-dark); line-height: 1.6; }
+  .rec-text strong { color: var(--green-soft); }
+ 
+  .nutrient-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .nutrient-item {
+    background: var(--green-light);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .nutrient-name { font-size: 13px; font-weight: 600; color: #3D7A42; margin-bottom: 2px; }
+  .nutrient-food { font-size: 11px; color: var(--text-light); }
+ 
+  .btn-restart {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--brown-dark);
+    border: 2px solid var(--brown-dark);
+    border-radius: 14px;
+    font-size: 14px;
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+  .btn-restart:hover { background: var(--brown-dark); color: white; }
+ 
+  .disclaimer {
+    background: var(--bone);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.7;
+    text-align: center;
+  }
+ 
+  .animate-in {
+    animation: fadeUp 0.5s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+ 
+<div class="header">
+  <h1>🦴 骨質疏鬆飲食風險評估系統</h1>
+  <p>基於 XGBoost 機器學習模型 · 個人化飲食推薦</p>
+</div>
+ 
+<div class="container">
+ 
+  <!-- 問卷頁 -->
+  <div class="question-page" id="questionPage">
+ 
+    <div class="progress-label" id="progressLabel">完成度 0%</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+ 
+    <!-- 基本資料 -->
+    <div class="section-title">基本資料</div>
+    <div class="card">
+      <div class="basic-grid">
+        <div class="form-group">
+          <label>性別</label>
+          <select id="gender" onchange="updateProgress()">
+            <option value="">請選擇</option>
+            <option value="male">男性</option>
+            <option value="female">女性</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>年齡</label>
+          <input type="number" id="age" placeholder="歲" min="20" max="100" oninput="updateProgress()">
+        </div>
+        <div class="form-group" id="menopauseGroup" style="display:none">
+          <label>停經狀態</label>
+          <select id="menopause" onchange="updateProgress()">
+            <option value="">請選擇</option>
+            <option value="yes">已停經</option>
+            <option value="no">未停經</option>
+          </select>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- 飲食習慣 -->
+    <div class="section-title">飲食與生活習慣</div>
+ 
+    <script>
+      // XGBoost F Score 權重（排除性別/停經，重新換算為100分）
+      // 總F Score（不含性別）= 46+44+42+38+36+34+32+32+28+28 = 360
+      const questions = [
+        { id: 'q_meat',    label: '紅肉飲食習慣',     fscore: 46, plas: 'DEHP、BBP', meta: 'MEHP、MBzP',
+          avoid: '牛肉、豬肉、羊肉等紅肉（尤其塑膠真空包裝）',
+          suggest: '改以雞肉、魚肉、豆腐、豆漿取代，補充優質蛋白質',
+          nutrient: '蛋白質有助骨基質形成' },
+        { id: 'q_hotpot',  label: '火鍋飲食習慣',     fscore: 44, plas: 'DEHP',     meta: 'MEHP',
+          avoid: '使用塑膠餐具的火鍋、高溫燙煮後塑化劑大量溶出',
+          suggest: '改用陶瓷鍋具、不鏽鋼餐具，選擇清湯鍋底，多攝取深綠色蔬菜',
+          nutrient: '蔬菜富含維生素K、鎂，有益骨骼健康' },
+        { id: 'q_drink',   label: '飲料飲食習慣',     fscore: 42, plas: 'DEHP',     meta: 'MEHP',
+          avoid: '塑膠杯手搖飲、瓶裝飲料（尤其熱飲接觸塑膠）',
+          suggest: '改喝牛奶、豆漿、無糖綠茶、溫開水，以馬克杯或玻璃杯盛裝',
+          nutrient: '牛奶、豆漿富含鈣質，每日建議1000-1200mg' },
+        { id: 'q_alcohol', label: '飲酒習慣',         fscore: 38, plas: 'DEP',      meta: 'MEP',
+          avoid: '頻繁飲酒（酒精抑制鈣吸收並加速骨質流失）',
+          suggest: '以無酒精飲品取代，適量補充鈣質與鎂，每日建議飲水2000ml以上',
+          nutrient: '鎂有助調節骨代謝，建議每日320-420mg' },
+        { id: 'q_stirfry', label: '快炒烹飪習慣',     fscore: 36, plas: 'DEHP',     meta: 'MEHP',
+          avoid: '高溫快炒時塑膠鍋鏟、塑膠容器受熱釋出塑化劑',
+          suggest: '改用不鏽鋼或木質鍋鏟，以清蒸、水煮、烤箱等方式烹調',
+          nutrient: '蒸煮食材保留更多鈣質與維生素D不流失' },
+        { id: 'q_incense', label: '接觸燒香頻率',     fscore: 34, plas: '複合PAEs', meta: '複合代謝物',
+          avoid: '長時間密閉空間燃香，燃燒產生複合塑化劑與空汙',
+          suggest: '保持空間通風，減少燃香時間，改以鮮花替代',
+          nutrient: '良好空氣品質有助維生素D合成（日照）' },
+        { id: 'q_oilfried',label: '油炸類飲食習慣',   fscore: 32, plas: 'DEHP',     meta: 'MEHP',
+          avoid: '高溫油炸食物（高脂食物加速DEHP從包裝溶出）',
+          suggest: '改用氣炸鍋或烤箱，搭配堅果、橄欖油等健康脂肪',
+          nutrient: '維生素D為脂溶性，可搭配健康油脂促進吸收' },
+        { id: 'q_airpol',  label: '空汙焚燒環境接觸', fscore: 32, plas: '複合PAEs', meta: '複合代謝物',
+          avoid: '長期暴露於工廠廢氣、垃圾焚燒、交通廢氣環境',
+          suggest: '佩戴口罩、保持室內通風，多食抗氧化蔬果（深色蔬菜、莓果類）',
+          nutrient: '抗氧化物（多酚）有助降低骨骼發炎反應' },
+        { id: 'q_motor',   label: '汽機車交通習慣',   fscore: 28, plas: 'DEHP、BBP', meta: 'MEHP、MBzP',
+          avoid: '長時間乘坐車輛（車內高溫使儀表板、座椅釋放DEHP）',
+          suggest: '適當開窗通風，多步行或騎腳踏車，增加戶外日照時間',
+          nutrient: '日照促進維生素D合成，每日建議800-1000 IU' },
+        { id: 'q_aroma',   label: '接觸香氛頻率',     fscore: 28, plas: 'DEP、DIBP', meta: 'MEP、MBzP',
+          avoid: '頻繁使用香水、精油、香氛蠟燭（含DEP與DIBP）',
+          suggest: '改用天然精油或無香產品，使用時保持空間通風',
+          nutrient: '減少塑化劑暴露，保護骨骼代謝正常運作' },
+      ];
+ 
+      const totalFScore = questions.reduce((s, q) => s + q.fscore, 0); // 360
+ 
+      const opts = [
+        { label: '從不', sub: '無此習慣', val: 0 },
+        { label: '偶爾', sub: '每週1-2次', val: 0.33 },
+        { label: '經常', sub: '每週3-5次', val: 0.66 },
+        { label: '總是', sub: '每天', val: 1.0 },
+      ];
+ 
+      function buildQuestions() {
+        const container = document.getElementById('questionsContainer');
+        questions.forEach((q, i) => {
+          const weight = ((q.fscore / totalFScore) * 100).toFixed(1);
+          const maxScore = ((q.fscore / totalFScore) * 100).toFixed(1);
+          const html = `
+            <div class="card" id="card_${q.id}">
+              <div class="card-header">
+                <div class="card-num">${i+1}</div>
+                <div class="card-info">
+                  <div class="card-title">${q.label}</div>
+                  <div class="card-weight">權重 <span class="weight-badge">${weight}%</span> · 最高 ${maxScore} 分 · 相關塑化劑：${q.plas}</div>
+                </div>
+              </div>
+              <div class="options">
+                ${opts.map((o, j) => `
+                  <div class="option" id="${q.id}_${j}" onclick="selectOpt('${q.id}', ${j}, ${o.val}, ${q.fscore})">
+                    <span class="option-label">${o.label}</span>
+                    <span class="option-sub">${o.sub}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+          container.innerHTML += html;
+        });
+      }
+ 
+      const answers = {};
+ 
+      function selectOpt(qid, optIdx, val, fscore) {
+        // Deselect
+        for (let j = 0; j < 4; j++) {
+          const el = document.getElementById(`${qid}_${j}`);
+          if (el) el.classList.remove('selected');
+        }
+        document.getElementById(`${qid}_${optIdx}`).classList.add('selected');
+        answers[qid] = { val, fscore };
+        updateProgress();
+      }
+ 
+      function updateProgress() {
+        const gender = document.getElementById('gender').value;
+        const age = document.getElementById('age').value;
+        const mGroup = document.getElementById('menopauseGroup');
+ 
+        // Show menopause if female
+        if (gender === 'female') {
+          mGroup.style.display = 'block';
+        } else {
+          mGroup.style.display = 'none';
+        }
+ 
+        const basicDone = gender && age;
+        const totalQ = questions.length;
+        const answered = Object.keys(answers).length;
+        const pct = Math.round(((basicDone ? 1 : 0) + answered) / (1 + totalQ) * 100);
+ 
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressLabel').textContent = `完成度 ${pct}%`;
+ 
+        const btn = document.getElementById('btnSubmit');
+        const allAnswered = answered === totalQ && gender && age;
+        btn.disabled = !allAnswered;
+      }
+ 
+      function calculate() {
+        const gender = document.getElementById('gender').value;
+        const age = parseInt(document.getElementById('age').value) || 0;
+        const menopause = document.getElementById('menopause').value;
+ 
+        // Base score from lifestyle (max 100)
+        let lifestyleScore = 0;
+        const scoreDetails = [];
+        questions.forEach(q => {
+          if (answers[q.id]) {
+            const sc = (answers[q.id].val * q.fscore / totalFScore * 100);
+            lifestyleScore += sc;
+            scoreDetails.push({ label: q.label, score: sc, maxScore: q.fscore / totalFScore * 100, val: answers[q.id].val });
+          }
+        });
+ 
+        // Menopause bonus (OR ~10x → +20 points on top)
+        let menopauseBonus = 0;
+        if (gender === 'female' && menopause === 'yes') menopauseBonus = 20;
+        // Age factor
+        let ageBonus = 0;
+        if (age >= 65) ageBonus = 10;
+        else if (age >= 50) ageBonus = 5;
+ 
+        const totalScore = Math.min(lifestyleScore + menopauseBonus + ageBonus, 100);
+ 
+        // Risk level
+        let risk, riskClass, riskIcon, riskDesc, bmdAdvice;
+        if (totalScore < 34) {
+          risk = '低風險'; riskClass = 'low'; riskIcon = '🟢';
+          riskDesc = '您目前的生活習慣與飲食型態對骨質疏鬆的風險相對較低。預防勝於治療，建議從日常飲食著手，維持均衡營養攝取，並參考下方個人化飲食建議持續保護骨骼健康。';
+          bmdAdvice = '目前風險較低，暫無需立即安排骨密度檢查。建議維持良好飲食與生活習慣，若無特殊症狀，可依一般慣例每兩年進行一次骨密度追蹤（DXA）。';
+        } else if (totalScore < 67) {
+          risk = '中風險'; riskClass = 'mid'; riskIcon = '🟡';
+          riskDesc = '您有部分生活習慣需要調整，建議優先參考下方飲食改善建議，從減少塑化劑暴露與補充骨骼關鍵營養素兩方面著手，以預防為優先策略。';
+          bmdAdvice = '建議諮詢醫師評估是否需要進行骨密度檢查（DXA）。若已接受過檢查，依臨床指引，未接受積極治療者不建議在一年內重複測量，一般建議兩年後再行追蹤。';
+        } else {
+          risk = '高風險'; riskClass = 'high'; riskIcon = '🔴';
+          riskDesc = '您的生活習慣評估顯示骨質疏鬆風險較高，建議積極調整飲食與生活習慣，並諮詢醫師進行進一步評估，以預防為核心策略降低骨折風險。';
+          bmdAdvice = '建議盡快諮詢醫師進行骨密度檢查（DXA）。若已確診並接受藥物治療，依文獻指引藥物需一年以上才能見到減少骨折的效果，建議持續用藥至少一至兩年，並由醫師視臨床需求彈性評估治療成效。追蹤時，髖骨骨密度變化需達3-6%、腰椎需達2-4%以上，方可認定為具臨床意義之顯著改變。';
+        }
+ 
+        // High-risk habits (val > 0.5)
+        const highRiskHabits = questions.filter(q => answers[q.id] && answers[q.id].val >= 0.66);
+ 
+        showResult(totalScore, lifestyleScore, menopauseBonus, ageBonus, risk, riskClass, riskIcon, riskDesc, bmdAdvice, scoreDetails, highRiskHabits);
+      }
+ 
+      function showResult(total, lifestyle, menopause, age, risk, riskClass, riskIcon, riskDesc, bmdAdvice, scoreDetails, highRisk) {
+        document.getElementById('questionPage').classList.add('hide');
+        const rp = document.getElementById('resultPage');
+        rp.classList.add('show');
+ 
+        // Risk banner
+        document.getElementById('riskBanner').className = `risk-banner ${riskClass} animate-in`;
+        document.getElementById('riskIcon').textContent = riskIcon;
+        document.getElementById('riskLevel').textContent = risk;
+        document.getElementById('riskScoreText').textContent = `綜合風險分數：${total.toFixed(1)} / 100 分`;
+        document.getElementById('riskDesc').textContent = riskDesc;
+ 
+        // Score breakdown
+        const breakdown = document.getElementById('scoreBreakdown');
+        breakdown.innerHTML = '';
+        const sorted = [...scoreDetails].sort((a, b) => b.score - a.score);
+        sorted.forEach(s => {
+          const pct = (s.score / s.maxScore * 100).toFixed(0);
+          const barClass = s.val >= 0.66 ? 'bar-high' : s.val >= 0.33 ? 'bar-mid' : 'bar-low';
+          breakdown.innerHTML += `
+            <div class="score-bar-item">
+              <div class="score-bar-label">
+                <span>${s.label}</span>
+                <span>${s.score.toFixed(1)}分</span>
+              </div>
+              <div class="score-bar-track">
+                <div class="score-bar-fill ${barClass}" style="width:${pct}%"></div>
+              </div>
+            </div>
+          `;
+        });
+        if (menopause > 0) {
+          breakdown.innerHTML += `
+            <div class="score-bar-item">
+              <div class="score-bar-label"><span>停經加權</span><span>+${menopause}分</span></div>
+              <div class="score-bar-track"><div class="score-bar-fill bar-high" style="width:100%"></div></div>
+            </div>`;
+        }
+        if (age > 0) {
+          breakdown.innerHTML += `
+            <div class="score-bar-item">
+              <div class="score-bar-label"><span>年齡加權</span><span>+${age}分</span></div>
+              <div class="score-bar-track"><div class="score-bar-fill bar-mid" style="width:60%"></div></div>
+            </div>`;
+        }
+ 
+        // Recommendations
+        const plasRec = document.getElementById('plasRecItems');
+        const nutrRec = document.getElementById('nutrRecItems');
+        plasRec.innerHTML = '';
+        nutrRec.innerHTML = '';
+ 
+        const toShow = highRisk.length > 0 ? highRisk : questions.slice(0, 3);
+        toShow.forEach(q => {
+          plasRec.innerHTML += `
+            <div class="rec-item">
+              <span class="rec-arrow">▸</span>
+              <div class="rec-text">
+                <strong>【${q.label}】</strong> 避免${q.avoid}。<br>
+                → ${q.suggest}
+              </div>
+            </div>`;
+          nutrRec.innerHTML += `
+            <div class="rec-item">
+              <span class="rec-arrow">▸</span>
+              <div class="rec-text">${q.nutrient}</div>
+            </div>`;
+        });
+ 
+        document.getElementById('bmdAdviceText').textContent = bmdAdvice;
+ 
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+ 
+      function restart() {
+        Object.keys(answers).forEach(k => delete answers[k]);
+        document.getElementById('gender').value = '';
+        document.getElementById('age').value = '';
+        document.getElementById('menopause').value = '';
+        document.getElementById('menopauseGroup').style.display = 'none';
+        // Clear selections
+        questions.forEach(q => {
+          for (let j = 0; j < 4; j++) {
+            const el = document.getElementById(`${q.id}_${j}`);
+            if (el) el.classList.remove('selected');
+          }
+        });
+        document.getElementById('questionPage').classList.remove('hide');
+        document.getElementById('resultPage').classList.remove('show');
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    </script>
+ 
+    <div id="questionsContainer"></div>
+ 
+    <button class="btn-submit" id="btnSubmit" disabled onclick="calculate()">
+      計算我的骨質疏鬆風險 →
+    </button>
+ 
+    <div class="disclaimer">
+      本系統依據 XGBoost 機器學習模型建構，僅供健康參考，不作為臨床診斷依據。如有疑慮請諮詢專業醫師。
+    </div>
+  </div>
+ 
+  <!-- 結果頁 -->
+  <div class="result-page" id="resultPage">
+ 
+    <div id="riskBanner" class="risk-banner">
+      <div class="risk-icon" id="riskIcon"></div>
+      <div class="risk-level" id="riskLevel"></div>
+      <div class="risk-score" id="riskScoreText"></div>
+      <div class="risk-desc" id="riskDesc"></div>
+    </div>
+ 
+    <div class="section-title">各習慣風險分析</div>
+    <div class="card">
+      <div id="scoreBreakdown"></div>
+    </div>
+ 
+    <div class="section-title">個人化飲食建議</div>
+ 
+    <div class="rec-card plasticizer animate-in" style="animation-delay:0.1s">
+      <div class="rec-header">
+        <span class="rec-icon">🧴</span>
+        <span class="rec-title">減少塑化劑暴露建議</span>
+        <span class="rec-tag">塑化劑減量</span>
+      </div>
+      <div id="plasRecItems"></div>
+    </div>
+ 
+    <div class="rec-card nutrition animate-in" style="animation-delay:0.2s">
+      <div class="rec-header">
+        <span class="rec-icon">🥗</span>
+        <span class="rec-title">骨骼營養補充建議</span>
+        <span class="rec-tag">骨骼保護</span>
+      </div>
+      <div id="nutrRecItems"></div>
+      <div class="nutrient-grid" style="margin-top:14px">
+        <div class="nutrient-item">
+          <div class="nutrient-name">鈣質</div>
+          <div class="nutrient-food">牛奶、豆腐、小魚乾</div>
+        </div>
+        <div class="nutrient-item">
+          <div class="nutrient-name">維生素D</div>
+          <div class="nutrient-food">日曬、鮭魚、蛋黃</div>
+        </div>
+        <div class="nutrient-item">
+          <div class="nutrient-name">維生素K2</div>
+          <div class="nutrient-food">納豆、乳酪、蛋黃</div>
+        </div>
+        <div class="nutrient-item">
+          <div class="nutrient-name">鎂</div>
+          <div class="nutrient-food">堅果、深綠蔬菜、糙米</div>
+        </div>
+      </div>
+    </div>
+ 
+    <button class="btn-restart" onclick="restart()">← 重新評估</button>
+ 
+    <div class="rec-card animate-in" style="border-left-color: var(--brown-light); animation-delay:0.3s">
+      <div class="rec-header">
+        <span class="rec-icon">🏥</span>
+        <span class="rec-title">骨密度追蹤建議</span>
+        <span class="rec-tag" style="background:var(--bone); color:var(--brown-dark)">預防為主</span>
+      </div>
+      <div class="rec-item">
+        <span class="rec-arrow">▸</span>
+        <div class="rec-text" id="bmdAdviceText"></div>
+      </div>
+    </div>
+ 
+    <div class="disclaimer">
+      本系統以「預防勝於治療」為核心，依據 XGBoost 模型特徵重要性（F Score）加權計算風險分數，結合塑化劑暴露減量與骨骼營養補充兩大面向提供飲食建議。骨密度追蹤建議依據臨床文獻指引，未接受積極治療者建議兩年後追蹤；DXA 髖骨需達3-6%、腰椎需達2-4%以上方為顯著變化。本系統不作為臨床診斷依據，請諮詢專業醫師或營養師。
+    </div>
+  </div>
+ 
+</div>
+ 
+<script>
+  buildQuestions();
+  document.getElementById('gender').addEventListener('change', updateProgress);
+</script>
+</body>
+</html>
